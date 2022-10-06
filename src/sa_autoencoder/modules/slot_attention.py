@@ -71,13 +71,13 @@ class SlotAttention(nn.Module):
 
             # Attention.
             q = self.project_q(slots)  # Shape: [batch_size, num_slots, slot_size].
-            q *= self.slot_size ** -0.5  # Normalization.
+            q = q * self.slot_size ** -0.5  # Normalization.
             attn_logits = torch.einsum('bid,bsd->bis', k, q)
             attn = attn_logits.softmax(dim=-1)
             # `attn` has shape: [batch_size, num_inputs, num_slots].
 
             # Weigted mean.
-            attn += self.epsilon
+            attn = attn + self.epsilon
             attn = attn / attn.sum(axis=-1, keepdims=True)
             updates = torch.einsum('bis,bid->bsd', attn, v)
             # `updates` has shape: [batch_size, num_slots, slot_size].
