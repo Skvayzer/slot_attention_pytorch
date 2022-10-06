@@ -24,6 +24,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         parser.add_argument("--lr", type=float, default=4.e-4)
         parser.add_argument("--num_slots", type=int, default=4)
         parser.add_argument("--num_steps", type=int, default=500_000)
+        parser.add_argument("--num_iterations", type=int, default=3)
+
 
         return parent_parser
 
