@@ -2,7 +2,6 @@
 # - CLEVR (with masks) 70k samples with crop in the center
 # - Multi-dSprites first 60K samples
 # - Tetrominoes first 60k samples
-
 from torch import nn
 
 
@@ -29,8 +28,31 @@ class Decoder(nn.Module):
                 nn.ConvTranspose2d(hidden_channels, out_channels,
                                    kernel_size=3, stride=(1, 1), padding=1)
             )
+        elif mode == 'multi_dsprites' or mode == 'tetrominoes':
+            self.decoder_cnn = nn.Sequential(
+                nn.ConvTranspose2d(in_channels, hidden_channels,
+                                   kernel_size=3, stride=(1, 1), padding=1), nn.ReLU(),
+                nn.ConvTranspose2d(hidden_channels, hidden_channels,
+                                   kernel_size=3, stride=(1, 1), padding=1), nn.ReLU(),
+                nn.ConvTranspose2d(hidden_channels, hidden_channels,
+                                   kernel_size=3, stride=(1, 1), padding=1), nn.ReLU(),
+                nn.ConvTranspose2d(hidden_channels, out_channels,
+                                   kernel_size=3, stride=(1, 1), padding=1), nn.ReLU(),
+            )
+
         else:
             raise ValueError("Mode should be either of ['clevr', 'multi_dsprites', 'tetrominoes'")
 
     def forward(self, x):
         return self.decoder_cnn(x)
+
+
+if __name__ == '__main__':
+    import torch
+
+    decoder = Decoder(in_channels=32, out_channels=4, hidden_channels=32, mode='multi_dsprites')
+    x = torch.randn((10, 32, 32, 32))
+
+    out = decoder(x)
+
+    print("Done")

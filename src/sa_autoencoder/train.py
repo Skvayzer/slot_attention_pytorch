@@ -13,7 +13,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
 
-from model import SlotAttentionAutoEncoder
+from autoencoder import SlotAttentionAutoEncoder
 from datasets import get_dataset
 
 # ------------------------------------------------------------

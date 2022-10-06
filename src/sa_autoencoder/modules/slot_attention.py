@@ -8,6 +8,7 @@ class SlotAttention(nn.Module):
     def __init__(self,
                  num_iterations: int = 3,
                  num_slots: int = 6,
+                 inputs_size: int = 64,
                  slot_size=64,
                  mlp_hidden_size=128,
                  epsilon=1e-8):
@@ -26,10 +27,11 @@ class SlotAttention(nn.Module):
         self.slot_size = slot_size
         self.mlp_hidden_size = mlp_hidden_size
         self.epsilon = epsilon
+        self.inputs_size = inputs_size
 
-        self.norm_inputs = nn.LayerNorm(self.slot_size)
-        self.norm_slots = nn.LayerNorm(self.slot_size)
-        self.norm_mlp = nn.LayerNorm(self.slot_size)
+        self.norm_inputs = nn.LayerNorm(self.inputs_size)
+        self.norm_slots = nn.LayerNorm(slot_size)
+        self.norm_mlp = nn.LayerNorm(slot_size)
 
         # Parameters for Gaussian init (shared by all slots).
         self.slots_mu = nn.Parameter(torch.zeros(1, 1, self.slot_size))
@@ -40,8 +42,8 @@ class SlotAttention(nn.Module):
 
         # Linear maps for the attention module.
         self.project_q = nn.Linear(self.slot_size, self.slot_size, bias=False)
-        self.project_k = nn.Linear(self.slot_size, self.slot_size, bias=False)
-        self.project_v = nn.Linear(self.slot_size, self.slot_size, bias=False)
+        self.project_k = nn.Linear(self.inputs_size, self.slot_size, bias=False)
+        self.project_v = nn.Linear(self.inputs_size, self.slot_size, bias=False)
 
         # Slot update functions.
         self.gru = nn.GRUCell(self.slot_size, self.slot_size)
@@ -81,10 +83,10 @@ class SlotAttention(nn.Module):
             # `updates` has shape: [batch_size, num_slots, slot_size].
 
             # Slot update.
-            u = updates.reshape(-1, inputs_size)
-            p = slots_prev.reshape(-1, inputs_size)
+            u = updates.reshape(-1, self.slot_size)
+            p = slots_prev.reshape(-1, self.slot_size)
             slots = self.gru(u, p)
-            slots = slots.reshape(batch_size, -1, inputs_size)
+            slots = slots.reshape(batch_size, -1, self.slot_size)
             slots = slots + self.mlp(self.norm_mlp(slots))
 
         return slots
