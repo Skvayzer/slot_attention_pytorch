@@ -22,19 +22,28 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # model options
         parser.add_argument("--lr", type=float, default=4.e-4)
         parser.add_argument("--num_steps", type=int, default=500_000)
+        parser.add_argument("--warmup_steps", type=int, default=10_000)
+        parser.add_argument("--decay_steps", type=int, default=100_000)
+        parser.add_argument("--decay_rate", type=int, default=100_000)
 
         return parent_parser
 
-    def __init__(self, mode: str, num_iterations: int = 3, **kwargs):
+    def __init__(self, mode: str, num_iterations: int = 3, lr: float = 4e-4, **kwargs):
         super(SlotAttentionAutoEncoder, self).__init__()
 
         self.num_iterations = num_iterations
         self.slot_size = 64
+        self.lr = lr
 
         self.mode: str = mode
         self.hidden_size: int
         self.decoder_initial_size: Tuple[int, int]
         self.resolution: Tuple[int, int]
+
+        self.warmup_steps = kwargs['warmup_steps']
+        self.decay_steps = kwargs['decay_steps']
+        self.decay_rate = kwargs['decay_rate']
+        self.num_steps = kwargs['num_steps']
 
         if self.mode == 'clevr':
             self.hidden_size = 64
@@ -142,26 +151,37 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss = self.step(batch, batch_idx, mode='Train')
+
+        optim = self.optimizers()
+        if self.global_step < self.warmup_steps:
+            lr = self.lr * self.global_step / self.warmup_steps
+        else:
+            lr = self.lr
+        lr = lr * (self.decay_rate ** (self.global_step / self.decay_steps))
+        optim.param_groups[0]['lr'] = lr
+
         return loss
 
     def validation_step(self, batch, batch_idx):
         self.step(batch, batch_idx, mode='Validation')
 
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.lr)
 
 # if __name__ == '__main__':
-    # Clevr
-    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
-    # x = torch.randn((10, 3, 128, 128))
-    # ans = slot_attention_ae(x)
-    # print("Done")
+# Clevr
+# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
+# x = torch.randn((10, 3, 128, 128))
+# ans = slot_attention_ae(x)
+# print("Done")
 
-    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
-    #                                              mode='multi_dsprites')
-    # x = torch.randn((10, 3, 64, 64))
-    # ans = slot_attention_ae(x)
-    # print("Done")
-    #
-    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
-    # x = torch.randn((10, 3, 35, 35))
-    # ans = slot_attention_ae(x)
-    # print("Done")
+# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
+#                                              mode='multi_dsprites')
+# x = torch.randn((10, 3, 64, 64))
+# ans = slot_attention_ae(x)
+# print("Done")
+#
+# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+# x = torch.randn((10, 3, 35, 35))
+# ans = slot_attention_ae(x)
+# print("Done")
