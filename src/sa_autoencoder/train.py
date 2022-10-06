@@ -111,7 +111,7 @@ callbacks = [
 
 # trainer parameters
 profiler = 'simple'  # 'simple'/'advanced'/None
-devices = [args.devices]
+devices = [int(args.devices)]
 
 # trainer
 trainer = pl.Trainer(accelerator='gpu',
