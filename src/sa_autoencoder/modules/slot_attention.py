@@ -62,7 +62,7 @@ class SlotAttention(nn.Module):
 
         # Initialize the slots. Shape: [batch_size, num_slots, slot_size].
         slots = self.slots_mu + torch.exp(self.slots_log_sigma) \
-                * torch.randn(inputs.shape[0], self.num_slots, self.slot_size)
+                * torch.randn(inputs.shape[0], self.num_slots, self.slot_size).type_as(inputs)
 
         # Multiple rounds of attention.
         for _ in range(self.num_iterations):
