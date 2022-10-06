@@ -148,20 +148,20 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         self.step(batch, batch_idx, mode='Validation')
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # Clevr
     # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
     # x = torch.randn((10, 3, 128, 128))
     # ans = slot_attention_ae(x)
     # print("Done")
 
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
-                                                 mode='multi_dsprites')
-    x = torch.randn((10, 3, 64, 64))
-    ans = slot_attention_ae(x)
-    print("Done")
-
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
-    x = torch.randn((10, 3, 35, 35))
-    ans = slot_attention_ae(x)
-    print("Done")
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
+    #                                              mode='multi_dsprites')
+    # x = torch.randn((10, 3, 64, 64))
+    # ans = slot_attention_ae(x)
+    # print("Done")
+    #
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+    # x = torch.randn((10, 3, 35, 35))
+    # ans = slot_attention_ae(x)
+    # print("Done")
