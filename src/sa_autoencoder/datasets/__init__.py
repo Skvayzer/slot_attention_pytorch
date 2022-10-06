@@ -1,8 +1,7 @@
 from pathlib import Path
-
-from multi_dsprites import MultiDSprites
 from torch.utils.data import Dataset
 
+from .multi_dsprites import MultiDSprites
 
 def get_dataset(path_to_dataset: Path, mode='clevr', validation=False, test=False) -> Dataset:
     assert validation ^ test
