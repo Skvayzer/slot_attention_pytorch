@@ -25,7 +25,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
 
         return parent_parser
 
-    def __init__(self, mode: str, num_iterations: int, **kwargs):
+    def __init__(self, mode: str, num_iterations: int = 3, **kwargs):
         super(SlotAttentionAutoEncoder, self).__init__()
 
         self.num_iterations = num_iterations
@@ -51,7 +51,6 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.resolution = (35, 35)
             self.decoder_initial_size = self.resolution
             self.num_slots = 4
-
 
         self.encoder_cnn = Encoder(in_channels=3,
                                    hidden_channels=self.hidden_size)
@@ -156,7 +155,8 @@ if __name__ == '__main__':
     # ans = slot_attention_ae(x)
     # print("Done")
 
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3, mode='multi_dsprites')
+    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
+                                                 mode='multi_dsprites')
     x = torch.randn((10, 3, 64, 64))
     ans = slot_attention_ae(x)
     print("Done")
