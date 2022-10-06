@@ -122,5 +122,9 @@ trainer = pl.Trainer(accelerator='gpu',
                      logger=wandb_logger,
                      check_val_every_n_epoch=5)
 
+if 'ckpt_path' not in  dict_args:
+    dict_args['ckpt_path'] = None
+
+
 # Train
-trainer.fit(autoencoder, train_dataloaders=train_loader, val_dataloaders=val_loader, ckpt_path=args.ckpt_path)
+trainer.fit(autoencoder, train_dataloaders=train_loader, val_dataloaders=val_loader, ckpt_path=dict_args['ckpt_path'])
