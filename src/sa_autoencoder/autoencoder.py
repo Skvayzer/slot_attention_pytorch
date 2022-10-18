@@ -28,7 +28,15 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
 
         return parent_parser
 
-    def __init__(self, mode: str, num_iterations: int = 3, lr: float = 4e-4, **kwargs):
+    def __init__(self, mode: str,
+                 num_iterations: int = 3,
+                 lr: float = 4e-4,
+                 warmup_steps: int = 10_000,
+                 decay_steps: int = 100_000,
+                 decay_rate: float = 0.5,
+                 num_steps: int = 500_000,
+                 add_quantization: bool = False,
+                 **kwargs):
         super(SlotAttentionAutoEncoder, self).__init__()
 
         self.num_iterations = num_iterations
@@ -40,10 +48,10 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         self.decoder_initial_size: Tuple[int, int]
         self.resolution: Tuple[int, int]
 
-        self.warmup_steps = kwargs['warmup_steps']
-        self.decay_steps = kwargs['decay_steps']
-        self.decay_rate = kwargs['decay_rate']
-        self.num_steps = kwargs['num_steps']
+        self.warmup_steps = warmup_steps
+        self.decay_steps = decay_steps
+        self.decay_rate = decay_rate
+        self.num_steps = num_steps
 
         if self.mode == 'clevr':
             self.hidden_size = 64
@@ -78,6 +86,15 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             nn.Linear(self.hidden_size, self.hidden_size)
         )
 
+
+        # Quantization block
+        # TODO: Edit num in and num out
+        self.slots_lin = nn.Linear(20, 20)
+        self.coord_quantizer = CoordQuantizer(
+
+        )
+
+
         self.slot_attention = SlotAttention(num_iterations=self.num_iterations,
                                             num_slots=self.num_slots,
                                             inputs_size=self.hidden_size,
@@ -99,6 +116,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # Slot Attention module.
         slots = self.slot_attention(x)
         # `slots` has shape: [batch_size, num_slots, slot_size].
+
+
 
         # Spatial broadcast decoder.
         x = spatial_broadcast(slots, self.decoder_initial_size)
@@ -168,20 +187,20 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
 
-# if __name__ == '__main__':
-# Clevr
-# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
-# x = torch.randn((10, 3, 128, 128))
-# ans = slot_attention_ae(x)
-# print("Done")
+if __name__ == '__main__':
+    # Clevr
+    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
+    x = torch.randn((10, 3, 128, 128))
+    ans = slot_attention_ae(x)
+    print("Done")
 
-# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
-#                                              mode='multi_dsprites')
-# x = torch.randn((10, 3, 64, 64))
-# ans = slot_attention_ae(x)
-# print("Done")
-#
-# slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
-# x = torch.randn((10, 3, 35, 35))
-# ans = slot_attention_ae(x)
-# print("Done")
+    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
+                                                 mode='multi_dsprites')
+    x = torch.randn((10, 3, 64, 64))
+    ans = slot_attention_ae(x)
+    print("Done")
+
+    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+    x = torch.randn((10, 3, 35, 35))
+    ans = slot_attention_ae(x)
+    print("Done")

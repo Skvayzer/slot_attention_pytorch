@@ -10,10 +10,10 @@ class Encoder(nn.Module):
                  out_channels: int = 64):
         super().__init__()
         self.encoder_cnn = nn.Sequential(
-            nn.Conv2d(in_channels, hidden_channels, kernel_size=5, padding='same'), nn.ReLU(),
-            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=5, padding='same'), nn.ReLU(),
-            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=5, padding='same'), nn.ReLU(),
-            nn.Conv2d(hidden_channels, out_channels, kernel_size=5, padding='same'), nn.ReLU()
+            nn.Conv2d(in_channels, hidden_channels, kernel_size=5, padding=2), nn.ReLU(),
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=5, padding=2), nn.ReLU(),
+            nn.Conv2d(hidden_channels, hidden_channels, kernel_size=5, padding=2), nn.ReLU(),
+            nn.Conv2d(hidden_channels, out_channels, kernel_size=5, padding=2), nn.ReLU()
         )
 
     def forward(self, x):
