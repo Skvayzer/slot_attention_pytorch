@@ -1,4 +1,5 @@
 from typing import Tuple
+from modules.quantizer import CoordQuantizer
 
 import torch
 import pytorch_lightning as pl
@@ -36,12 +37,16 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
                  decay_rate: float = 0.5,
                  num_steps: int = 500_000,
                  add_quantization: bool = False,
+                 beta: float = 1.,
                  **kwargs):
         super(SlotAttentionAutoEncoder, self).__init__()
+
+        self.add_quantization = add_quantization
 
         self.num_iterations = num_iterations
         self.slot_size = 64
         self.lr = lr
+        self.beta = beta # KL multiply coef
 
         self.mode: str = mode
         self.hidden_size: int
@@ -78,7 +83,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
                                    mode=self.mode)
 
         self.encoder_pos = SoftPositionEmbed(resolution=self.resolution)
-        self.decoder_pos = SoftPositionEmbed(resolution=self.decoder_initial_size)
+        self.decoder_pos = SoftPositionEmbed(
+            resolution=self.decoder_initial_size)
 
         self.layer_norm = nn.LayerNorm(self.slot_size)
         self.mlp = torch.nn.Sequential(
@@ -86,14 +92,14 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             nn.Linear(self.hidden_size, self.hidden_size)
         )
 
-
-        # Quantization block
-        # TODO: Edit num in and num out
-        self.slots_lin = nn.Linear(20, 20)
-        self.coord_quantizer = CoordQuantizer(
-
-        )
-
+        if self.add_quantization:
+            # Quantization block
+            # TODO: Edit num in and num out
+            self.slots_lin = nn.Linear(self.hidden_size * 3, self.slot_size)
+            self.coord_quantizer = CoordQuantizer(
+                [17,  # shape / orientation
+                6]  # colors
+            )
 
         self.slot_attention = SlotAttention(num_iterations=self.num_iterations,
                                             num_slots=self.num_slots,
@@ -108,7 +114,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # Convolutional encoder with position embedding.
         x = self.encoder_cnn(image)  # CNN Backbone.
         x = self.encoder_pos(x)  # Position embedding.
-        x = spatial_flatten(x)  # Flatten spatial dimensions (treat image as set).
+        # Flatten spatial dimensions (treat image as set).
+        x = spatial_flatten(x)
         x = self.layer_norm(x)
         x = self.mlp(x)  # Feedforward network on set.
         # `x` has shape: [batch_size, width*height, input_size].
@@ -117,7 +124,13 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         slots = self.slot_attention(x)
         # `slots` has shape: [batch_size, num_slots, slot_size].
 
-
+        # Quantization
+        if self.add_quantization:
+            props, coords, kl_loss = self.coord_quantizer(slots)
+            # `props` has shape: [batch_size, num_slots, 32]
+            # `coords` has shape: [batch_size, num_slots, 64]
+            slots = torch.cat([props, coords], dim=-1)
+            slots = self.slots_lin(slots)
 
         # Spatial broadcast decoder.
         x = spatial_broadcast(slots, self.decoder_initial_size)
@@ -127,35 +140,47 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # `x` has shape: [batch_size*num_slots, width, height, num_channels+1].
 
         # Undo combination of slot and batch dimension; split alpha masks.
-        recons, masks = unstack_and_split(x, batch_size=image.shape[0], num_slots=self.num_slots)
+        recons, masks = unstack_and_split(
+            x, batch_size=image.shape[0], num_slots=self.num_slots)
         # `recons` has shape: [batch_size, num_slots, width, height, num_channels].
         # `masks` has shape: [batch_size, num_slots, width, height, 1].
 
         masks = F.softmax(masks, dim=1)
         recon_combined = torch.sum(recons * masks, dim=1)
 
-        return recon_combined, recons, masks
+        if self.add_quantization:
+            out = recon_combined, recons, masks, kl_loss
+        else:
+            out = recon_combined, recons, masks #, kl_loss
+
+        return out
 
     def step(self, batch, batch_idx, mode='Train'):
         if mode == 'Train':
-            log_images = lambda x: x == 0
+            def log_images(x): return x == 0
         elif mode == 'Validation':
-            log_images = lambda x: x % 10 == 0
+            def log_images(x): return x % 10 == 0
         else:
             raise ValueError('Wrong mode')
 
         image = batch
-        recon_combined, recons, masks = self(image)
+        if self.add_quantization:
+            recon_combined, recons, masks, kl_loss = self(image)
+        else:
+            recon_combined, recons, masks = self(image)
         loss = F.mse_loss(recon_combined, image)
 
         self.log(f'{mode} MSE', loss)
+        if self.add_quantization:
+            self.log(f'{mode} KL loss', kl_loss)
 
         # Log reconstruction
         if log_images(batch_idx):
             self.logger.experiment.log({
                 f"{mode} Reconstruction": [
                     wandb.Image(image[0], caption='Initial Scene'),
-                    wandb.Image(recon_combined[0], caption='Reconstructed Scene'),
+                    wandb.Image(recon_combined[0],
+                                caption='Reconstructed Scene'),
                 ]}, commit=False)
 
             self.logger.experiment.log({
@@ -165,6 +190,9 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.logger.experiment.log({
                 f"{mode}/Masks": [wandb.Image(masks[0][i], caption=f'Mask {i}') for i in range(self.num_slots)]
             }, commit=True)
+
+        if self.add_quantization:
+            loss = loss + kl_loss * self.beta
 
         return loss
 
@@ -187,20 +215,29 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
 
+
 if __name__ == '__main__':
     # Clevr
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
-    x = torch.randn((10, 3, 128, 128))
-    ans = slot_attention_ae(x)
-    print("Done")
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
+    # x = torch.randn((10, 3, 128, 128))
+    # ans = slot_attention_ae(x)
+    # print("Done")
 
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
-                                                 mode='multi_dsprites')
-    x = torch.randn((10, 3, 64, 64))
-    ans = slot_attention_ae(x)
-    print("Done")
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(64, 64), num_slots=6, num_iterations=3,
+    #                                              mode='multi_dsprites')
+    # x = torch.randn((10, 3, 64, 64))
+    # ans = slot_attention_ae(x)
+    # print("Done")
 
-    slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+    # x = torch.randn((10, 3, 35, 35))
+    # ans = slot_attention_ae(x)
+    # print("Done")
+
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(35, 35), num_slots=4, num_iterations=3, mode='tetrominoes')
+    slot_attention_ae = SlotAttentionAutoEncoder.load_from_checkpoint(
+        "/home/alexandr_ko/slot_attention_pytorch/src/sa_autoencoder/tetrominoes_sa/2xa09k2z/checkpoints/epoch=509-step=477870.ckpt", strict=False)
+
     x = torch.randn((10, 3, 35, 35))
     ans = slot_attention_ae(x)
     print("Done")

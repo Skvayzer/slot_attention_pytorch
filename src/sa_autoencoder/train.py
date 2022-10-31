@@ -1,6 +1,8 @@
+from enum import auto
 import os
 import random
 import sys
+from typing import OrderedDict
 
 import torch
 import numpy as np
@@ -35,14 +37,15 @@ program_parser = parser.add_argument_group('program')
 program_parser.add_argument("--log_model", default=True)
 
 # dataset parameters
-program_parser.add_argument("--mode", type=str, choices=['tetrominoes', 'multi_dsprites', 'clevr'])
-program_parser.add_argument("--path_to_dataset", type=Path, default=Path(__file__).absolute().parent / "data",
+program_parser.add_argument("--mode", type=str, choices=['tetrominoes', 'multi_dsprites', 'clevr'], default='tetrominoes')
+program_parser.add_argument("--path_to_dataset", type=Path, default=Path("/home/alexandr_ko/datasets/multi_objects/tetrominoes"),
                             help="Path to the dataset directory")
 
 # Experiment parameters
 program_parser.add_argument("--batch_size", type=int, default=2)
 program_parser.add_argument("--from_checkpoint", type=str, default=None)
 program_parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
+program_parser.add_argument("--add_quantization", type=bool, default=True)
 
 # Add model specific args
 parser = SlotAttentionAutoEncoder.add_model_specific_args(parent_parser=parser)
@@ -83,7 +86,16 @@ val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=10,
 
 # model
 dict_args = vars(args)
+ckpt_path = "/home/alexandr_ko/slot_attention_pytorch/src/sa_autoencoder/ckpt/epoch=509-step=477870.ckpt"
+state_dict = torch.load(ckpt_path)['state_dict']
+
+remove_decoder = False  
+if remove_decoder:
+    state_dict = {key: state_dict[key] for key in state_dict if not key.startswith("decoder")}
+
 autoencoder = SlotAttentionAutoEncoder(**dict_args)
+autoencoder.load_state_dict(state_dict, strict=False)
+
 
 # ------------------------------------------------------------
 # Callbacks
@@ -124,6 +136,8 @@ trainer = pl.Trainer(accelerator='gpu',
 
 if 'ckpt_path' not in  dict_args:
     dict_args['ckpt_path'] = None
+    #"/home/alexandr_ko/slot_attention_pytorch/src/sa_autoencoder/ckpt/epoch=509-step=477870.ckpt"
+
 
 
 # Train
