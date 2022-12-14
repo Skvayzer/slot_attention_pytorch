@@ -3,7 +3,6 @@ import torch
 from torch.nn import functional as F
 import numpy as np
 
-from .vsa import get_vsa_grid
 
 
 def get_grid(n):
