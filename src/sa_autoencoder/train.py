@@ -41,6 +41,9 @@ program_parser.add_argument("--mode", type=str, choices=['tetrominoes', 'multi_d
 program_parser.add_argument("--path_to_dataset", type=Path, default=Path("/home/alexandr_ko/datasets/multi_objects/tetrominoes"),
                             help="Path to the dataset directory")
 
+program_parser.add_argument("--path_to_checkpoint", type=Path, default=Path("/home/alexandr_ko/slot_attention_pytorch/src/sa_autoencoder/ckpt/epoch=509-step=477870.ckpt"),
+                            help="Path to the checkpoint")
+
 # Experiment parameters
 program_parser.add_argument("--batch_size", type=int, default=2)
 program_parser.add_argument("--from_checkpoint", type=str, default=None)
@@ -86,7 +89,7 @@ val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=10,
 
 # model
 dict_args = vars(args)
-ckpt_path = "/home/alexandr_ko/slot_attention_pytorch/src/sa_autoencoder/ckpt/epoch=509-step=477870.ckpt"
+ckpt_path = args.path_to_checkpoint
 state_dict = torch.load(ckpt_path)['state_dict']
 
 remove_decoder = False  
