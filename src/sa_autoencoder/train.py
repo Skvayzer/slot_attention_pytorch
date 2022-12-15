@@ -99,15 +99,17 @@ val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=10,
 
 # model
 dict_args = vars(args)
-ckpt_path = args.path_to_checkpoint
-state_dict = torch.load(ckpt_path)['state_dict']
-
-remove_decoder = False  
-if remove_decoder:
-    state_dict = {key: state_dict[key] for key in state_dict if not key.startswith("decoder")}
-
 autoencoder = SlotAttentionAutoEncoder(**dict_args)
-autoencoder.load_state_dict(state_dict, strict=False)
+
+ckpt_path = args.path_to_checkpoint
+if ckpt_path is not None:
+    state_dict = torch.load(ckpt_path)['state_dict']
+
+    remove_decoder = False
+    if remove_decoder:
+        state_dict = {key: state_dict[key] for key in state_dict if not key.startswith("decoder")}
+
+    autoencoder.load_state_dict(state_dict, strict=False)
 
 
 # ------------------------------------------------------------
