@@ -102,7 +102,7 @@ dict_args = vars(args)
 autoencoder = SlotAttentionAutoEncoder(**dict_args)
 
 ckpt_path = args.path_to_checkpoint
-if ckpt_path is not None:
+if ckpt_path != "None":
     state_dict = torch.load(ckpt_path)['state_dict']
 
     remove_decoder = False
