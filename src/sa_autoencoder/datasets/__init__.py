@@ -4,6 +4,9 @@ from torch.utils.data import Dataset
 from .multi_dsprites import MultiDSprites
 from .tetrominoes import Tetrominoes
 
+from .clevr import CLEVR
+
+
 def get_dataset(path_to_dataset: Path, mode='clevr', validation=False, test=False) -> Dataset:
     assert not (validation & test)
 
@@ -19,3 +22,5 @@ def get_dataset(path_to_dataset: Path, mode='clevr', validation=False, test=Fals
         raise ValueError
 
     return dataset
+
+__all__ = ['CLEVR', 'get_dataset']

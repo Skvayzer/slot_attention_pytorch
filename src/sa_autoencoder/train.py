@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader
 
 from autoencoder import SlotAttentionAutoEncoder
 from datasets import get_dataset
+from datasets import CLEVR
 
 # ------------------------------------------------------------
 # Constants
@@ -77,8 +78,17 @@ wandb_logger = WandbLogger(project=args.mode + '_sa')
 # Dataset
 # ------------------------------------------------------------
 
-train_dataset = get_dataset(path_to_dataset=args.path_to_dataset, mode=args.mode)
-val_dataset = get_dataset(path_to_dataset=args.path_to_dataset, mode=args.mode, validation=True)
+if args.mode == 'tetraminoes':
+    train_dataset = get_dataset(path_to_dataset=args.path_to_dataset, mode=args.mode)
+    val_dataset = get_dataset(path_to_dataset=args.path_to_dataset, mode=args.mode, validation=True)
+elif args.mode == 'clevr':
+    train_dataset = CLEVR(images_path=os.path.join(args.path_to_dataset, 'images', 'train'),
+                          scenes_path=os.path.join(args.path_to_dataset, 'scenes', 'CLEVR_train_scenes.json'),
+                          max_objs=6)
+
+    val_dataset = CLEVR(images_path=os.path.join(args.path_to_dataset, 'images', 'val'),
+                        scenes_path=os.path.join(args.path_to_dataset, 'scenes', 'CLEVR_val_scenes.json'),
+                        max_objs=6)
 
 train_loader = DataLoader(train_dataset, batch_size=args.batch_size, num_workers=10, shuffle=True, drop_last=True)
 val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=10, shuffle=False, drop_last=True)
