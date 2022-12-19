@@ -101,7 +101,7 @@ val_loader = DataLoader(val_dataset, batch_size=args.batch_size, num_workers=10,
 dict_args = vars(args)
 autoencoder = SlotAttentionAutoEncoder(**dict_args)
 
-ckpt_path = args.path_to_checkpoint
+ckpt_path = str(args.path_to_checkpoint)
 if ckpt_path != "None":
     state_dict = torch.load(ckpt_path)['state_dict']
 
