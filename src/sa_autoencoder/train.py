@@ -156,4 +156,4 @@ if 'ckpt_path' not in  dict_args:
 
 
 # Train
-trainer.fit(autoencoder, train_dataloaders=train_loader, val_dataloaders=val_loader, ckpt_path=dict_args['ckpt_path'])
+trainer.fit(autoencoder, train_dataloaders=train_loader, val_dataloaders=val_loader) #, ckpt_path=dict_args['ckpt_path'])
