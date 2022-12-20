@@ -114,9 +114,9 @@ for name, l in data_dict.items():
                   print(i)
                   break
 
-                imgs.append(d['image'].numpy().transpose(2, 0, 1).expand_dims(axis=0))
-                msks.append(d['mask'].numpy().transpose(0, 3, 1, 2).expand_dims(axis=0))
-                vsblt.append(d['visibility'].numpy().expand_dims(axis=0))
+                imgs.append(np.expand_dims(d['image'].numpy().transpose(2, 0, 1), axis=0))
+                msks.append(np.expand_dims(d['mask'].numpy().transpose(0, 3, 1, 2), axis=0))
+                vsblt.append(np.expand_dims(d['visibility'].numpy(), axis=0))
 
 
   # np.savez(os.path.join(current_dir,  dataset_name, dataset_name + '_' + name), images=images, masks=masks)
