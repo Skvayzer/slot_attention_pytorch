@@ -6,11 +6,16 @@ from torch.utils.data import Dataset
 
 
 class MultiDSprites(Dataset):
-    def __init__(self, path_to_dataset: Path):
-        data = np.load(path_to_dataset)
-        self.masks = data['masks']
-        self.images = data['images']
-        self.visibility = data['visibility']
+    def __init__(self, path_to_dataset: Path, mode=None):
+        if mode == 'clevr':
+            self.masks = np.load(path_to_dataset + '_masks.npz')
+            self.images = np.load(path_to_dataset + '_images.npz')
+            self.visibility = np.load(path_to_dataset + '_visibility.npz')
+        else:
+            data = np.load(path_to_dataset)
+            self.masks = data['masks']
+            self.images = data['images']
+            self.visibility = data['visibility']
         self.image_size = self.images[0].shape
 
     def __len__(self):

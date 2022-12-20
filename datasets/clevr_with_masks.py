@@ -17,7 +17,10 @@
 import tensorflow.compat.v1 as tf
 import numpy as np
 import os
+from npy_append_array import NpyAppendArray
+
 tf.enable_eager_execution()
+
 
 
 
@@ -88,24 +91,35 @@ ds = iter(dataset(dataset_path))
 
 for name, l in data_dict.items():
   print(f"{name} started")
-  images = np.zeros((l, 3, 240, 320), dtype=np.uint8)
-  masks = np.zeros((l, 11, 1, 240, 320), dtype=np.uint8)
-  visibility = np.zeros((l, 11), dtype=float)
-  for i in range(l):
-    if (i + 1) % 1_000 == 0:
-      print(i + 1)
-    try:
-      d = dict(next(ds))
-    except StopIteration:
-      print(i)
-      break
+  # images = np.zeros((l, 3, 240, 320), dtype=np.uint8)
+  # masks = np.zeros((l, 11, 1, 240, 320), dtype=np.uint8)
+  # visibility = np.zeros((l, 11), dtype=float)
 
-    images[i] = d['image'].numpy().transpose(2, 0, 1)
-    masks[i] = d['mask'].numpy().transpose(0, 3, 1, 2)
-    visibility[i] = d['visibility'].numpy()
+  path = os.path.join(current_dir,  dataset_name, dataset_name + '_' + name)
 
 
-  np.savez(os.path.join(current_dir,  dataset_name, dataset_name + '_' + name), images=images, masks=masks)
+  file1 = path + '_images.npz'
+  file2 = path + '_masks.npz'
+  file3 = path + '_visibility.npz'
+
+  with NpyAppendArray(file1) as imgs:
+      with NpyAppendArray(file1) as msks:
+          with NpyAppendArray(file1) as vsblt:
+              for i in range(l):
+                if (i + 1) % 1_000 == 0:
+                  print(i + 1)
+                try:
+                  d = dict(next(ds))
+                except StopIteration:
+                  print(i)
+                  break
+
+                imgs.append(d['image'].numpy().transpose(2, 0, 1).expand_dims(axis=0))
+                msks.append(d['mask'].numpy().transpose(0, 3, 1, 2).expand_dims(axis=0))
+                vsblt.append(d['visibility'].numpy().expand_dims(axis=0))
+
+
+  # np.savez(os.path.join(current_dir,  dataset_name, dataset_name + '_' + name), images=images, masks=masks)
   item = next(iter(ds))
 
 print("Done")

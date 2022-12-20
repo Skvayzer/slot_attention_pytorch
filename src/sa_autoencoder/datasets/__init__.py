@@ -10,14 +10,17 @@ from .clevr import CLEVR
 def get_dataset(path_to_dataset: Path, mode='clevr', validation=False, test=False) -> Dataset:
     assert not (validation & test)
 
-    if mode == 'multi_dsprites' or mode == 'tetrominoes':
+    if mode == 'multi_dsprites' or mode == 'tetrominoes' or mode=='clevr':
         if validation:
             split = 'val'
         elif test:
             split = 'test'
         else:
             split = 'train'
-        dataset = MultiDSprites(path_to_dataset=path_to_dataset / f'{mode}_{split}.npz')
+        if mode == 'clevr':
+            dataset = MultiDSprites(path_to_dataset=path_to_dataset / f'{mode}_{split}')
+        else:
+            dataset = MultiDSprites(path_to_dataset=path_to_dataset / f'{mode}_{split}.npz')
     else:
         raise ValueError
 
