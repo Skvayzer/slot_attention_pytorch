@@ -16,8 +16,8 @@
 
 singularity instance start \
                      --nv  \
-                     --bind /home/AI/yudin.da/smirnov_cv/quantised_sa:/home/quantised_sa \
-                     ml_env.sif ml_env
+                     --bind /home/AI/yudin.da/smirnov_cv/:/home/smirnov_cv/ \
+                     /home/AI/yudin.da/smirnov_cv/quantised_sa/ml_env.sif ml_env
 
 singularity exec instance://ml_env /bin/bash -c "
       source /miniconda/etc/profile.d/conda.sh;
@@ -28,8 +28,8 @@ singularity exec instance://ml_env /bin/bash -c "
       ulimit -Sn;
       nvidia-smi;
       free -m;
-      cd /home/quantised_sa;
-      python3 slot_attention_pytorch/train.py --mode "tetrominoes" --path_to_dataset "/home/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 534 --seed 1
+      cd /home/smirnov_cv;
+      python3 slot_attention_pytorch/train.py --mode "tetrominoes" --path_to_dataset "/home/smirnov_cv/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 534 --seed 1
       free -m;
 ";
 
