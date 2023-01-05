@@ -1,0 +1,227 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.7
+    framework: lightning
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    python_version: 3.7.12
+    start_time: 1671502661.226565
+    t:
+      1:
+      - 1
+      - 9
+      - 41
+      - 51
+      - 55
+      2:
+      - 1
+      - 9
+      - 41
+      - 51
+      - 55
+      3:
+      - 7
+      - 23
+      4: 3.7.12
+      5: 0.13.7
+      8:
+      - 5
+accelerator:
+  desc: null
+  value: null
+accumulate_grad_batches:
+  desc: null
+  value: null
+add_quantization:
+  desc: null
+  value: true
+amp_backend:
+  desc: null
+  value: native
+amp_level:
+  desc: null
+  value: null
+auto_lr_find:
+  desc: null
+  value: false
+auto_scale_batch_size:
+  desc: null
+  value: false
+auto_select_gpus:
+  desc: null
+  value: false
+batch_size:
+  desc: null
+  value: 64
+benchmark:
+  desc: null
+  value: null
+beta:
+  desc: null
+  value: 1.0
+check_val_every_n_epoch:
+  desc: null
+  value: 1
+decay_rate:
+  desc: null
+  value: 0.5
+decay_steps:
+  desc: null
+  value: 100000
+default_root_dir:
+  desc: null
+  value: null
+detect_anomaly:
+  desc: null
+  value: false
+deterministic:
+  desc: null
+  value: null
+devices:
+  desc: null
+  value: '1'
+enable_checkpointing:
+  desc: null
+  value: true
+enable_model_summary:
+  desc: null
+  value: true
+enable_progress_bar:
+  desc: null
+  value: true
+fast_dev_run:
+  desc: null
+  value: false
+from_checkpoint:
+  desc: null
+  value: null
+gpus:
+  desc: null
+  value: null
+gradient_clip_algorithm:
+  desc: null
+  value: null
+gradient_clip_val:
+  desc: null
+  value: null
+inference_mode:
+  desc: null
+  value: true
+ipus:
+  desc: null
+  value: null
+limit_predict_batches:
+  desc: null
+  value: null
+limit_test_batches:
+  desc: null
+  value: null
+limit_train_batches:
+  desc: null
+  value: null
+limit_val_batches:
+  desc: null
+  value: null
+log_every_n_steps:
+  desc: null
+  value: 50
+log_model:
+  desc: null
+  value: true
+logger:
+  desc: null
+  value: true
+lr:
+  desc: null
+  value: 0.0004
+max_epochs:
+  desc: null
+  value: 534
+max_steps:
+  desc: null
+  value: -1
+max_time:
+  desc: null
+  value: null
+min_epochs:
+  desc: null
+  value: null
+min_steps:
+  desc: null
+  value: null
+mode:
+  desc: null
+  value: clevr
+move_metrics_to_cpu:
+  desc: null
+  value: false
+multiple_trainloader_mode:
+  desc: null
+  value: max_size_cycle
+num_iterations:
+  desc: null
+  value: 3
+num_nodes:
+  desc: null
+  value: 1
+num_processes:
+  desc: null
+  value: null
+num_sanity_val_steps:
+  desc: null
+  value: 2
+num_steps:
+  desc: null
+  value: 500000
+overfit_batches:
+  desc: null
+  value: 0.0
+path_to_dataset:
+  desc: null
+  value: /home/cosmos/PycharmProjects/CogMod-Slot-Attention/datasets/CLEVR_v.1.0
+plugins:
+  desc: null
+  value: null
+precision:
+  desc: null
+  value: 32
+profiler:
+  desc: null
+  value: null
+reload_dataloaders_every_n_epochs:
+  desc: null
+  value: 0
+replace_sampler_ddp:
+  desc: null
+  value: true
+resume_from_checkpoint:
+  desc: null
+  value: null
+seed:
+  desc: null
+  value: 1
+strategy:
+  desc: null
+  value: null
+sync_batchnorm:
+  desc: null
+  value: false
+tpu_cores:
+  desc: null
+  value: null
+track_grad_norm:
+  desc: null
+  value: -1
+val_check_interval:
+  desc: null
+  value: null
+warmup_steps:
+  desc: null
+  value: 10000

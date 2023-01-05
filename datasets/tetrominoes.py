@@ -14,7 +14,7 @@
 # ============================================================================
 """Tetrominoes dataset reader."""
 
-import tensorflow.compat.v1 as tf
+import tensorflow._api.v2.compat.v1 as tf
 import numpy as np
 import os
 tf.enable_eager_execution()

@@ -1,0 +1,79 @@
+GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+  | Name            | Type              | Params
+------------------------------------------------------
+0 | encoder_cnn     | Encoder           | 312 K
+1 | decoder_cnn     | Decoder           | 514 K
+2 | encoder_pos     | SoftPositionEmbed | 65.9 K
+3 | decoder_pos     | SoftPositionEmbed | 576
+4 | layer_norm      | LayerNorm         | 128
+5 | mlp             | Sequential        | 8.3 K
+6 | slots_lin       | Linear            | 12.4 K
+7 | coord_quantizer | CoordQuantizer    | 5.7 K
+8 | slot_attention  | SlotAttention     | 46.1 K
+------------------------------------------------------
+897 K     Trainable params
+68.8 K    Non-trainable params
+965 K     Total params
+3.863     Total estimated model params size (MB)
+Traceback (most recent call last):
+  File "train.py", line 159, in <module>
+    trainer.fit(autoencoder, train_dataloaders=train_loader, val_dataloaders=val_loader) #, ckpt_path=dict_args['ckpt_path'])
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 604, in fit
+    self, self._fit_impl, model, train_dataloaders, val_dataloaders, datamodule, ckpt_path
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 645, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1098, in _run
+    results = self._run_stage()
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1177, in _run_stage
+    self._run_train()
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1190, in _run_train
+    self._run_sanity_check()
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1262, in _run_sanity_check
+    val_loop.run()
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/loops/dataloader/evaluation_loop.py", line 152, in advance
+    dl_outputs = self.epoch_loop.run(self._data_fetcher, dl_max_batches, kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 137, in advance
+    output = self._evaluation_step(**kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 234, in _evaluation_step
+    output = self.trainer._call_strategy_hook(hook_name, *kwargs.values())
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1480, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/pytorch_lightning/strategies/strategy.py", line 390, in validation_step
+    return self.model.validation_step(*args, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch/src/sa_autoencoder/autoencoder.py", line 213, in validation_step
+    self.step(batch, batch_idx, mode='Validation')
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch/src/sa_autoencoder/autoencoder.py", line 168, in step
+    recon_combined, recons, masks, kl_loss = self(image)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch/src/sa_autoencoder/autoencoder.py", line 115, in forward
+    x = self.encoder_cnn(image)  # CNN Backbone.
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch/src/sa_autoencoder/modules/encoder.py", line 20, in forward
+    return self.encoder_cnn(x)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/container.py", line 204, in forward
+    input = module(input)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1194, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/conv.py", line 463, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/lib/python3.7/site-packages/torch/nn/modules/conv.py", line 460, in _conv_forward
+    self.padding, self.dilation, self.groups)
+TypeError: conv2d() received an invalid combination of arguments - got (dict, Parameter, Parameter, tuple, tuple, tuple, int), but expected one of:
+ * (Tensor input, Tensor weight, Tensor bias, tuple of ints stride, tuple of ints padding, tuple of ints dilation, int groups)
+      didn't match because some of the arguments have invalid types: ([31mdict[39m, [31mParameter[39m, [31mParameter[39m, [31mtuple[39m, [31mtuple[39m, [31mtuple[39m, [32mint[39m)
+ * (Tensor input, Tensor weight, Tensor bias, tuple of ints stride, str padding, tuple of ints dilation, int groups)
+      didn't match because some of the arguments have invalid types: ([31mdict[39m, [31mParameter[39m, [31mParameter[39m, [31mtuple[39m, [31mtuple[39m, [31mtuple[39m, [32mint[39m)
+Sanity Checking DataLoader 0:   0%|                                                                                                                                                                               | 0/2 [00:00<?, ?it/s]

@@ -1,0 +1,110 @@
+{
+    "os": "Linux-5.15.74-3-MANJARO-x86_64-with-arch-Manjaro-Linux",
+    "python": "3.7.12",
+    "heartbeatAt": "2022-12-20T02:17:42.431635",
+    "startedAt": "2022-12-20T02:17:41.203952",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--mode",
+        "clevr",
+        "--path_to_dataset",
+        "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/datasets/CLEVR_v.1.0",
+        "--devices",
+        "1",
+        "--batch_size",
+        "64",
+        "--max_epochs",
+        "534",
+        "--seed",
+        "1"
+    ],
+    "state": "running",
+    "program": "train.py",
+    "codePath": "src/sa_autoencoder/train.py",
+    "git": {
+        "remote": "https://github.com/Skvayzer/slot_attention_pytorch",
+        "commit": "681feff3eea80e235a4474057a603b2353c0cfc2"
+    },
+    "email": "mrskvayzer@gmail.com",
+    "root": "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch",
+    "host": "CoSmOS",
+    "username": "cosmos",
+    "executable": "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/venv/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 1536.1441666666667,
+        "min": 1400.0,
+        "max": 3000.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1433.73,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 3000.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        },
+        {
+            "current": 1400.0,
+            "min": 1400.0,
+            "max": 3000.0
+        }
+    ],
+    "disk": {
+        "total": 73.95027923583984,
+        "used": 54.500396728515625
+    },
+    "memory": {
+        "total": 15.003089904785156
+    }
+}

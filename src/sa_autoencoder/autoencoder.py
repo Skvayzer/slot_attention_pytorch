@@ -98,7 +98,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.slots_lin = nn.Linear(self.hidden_size * 3, self.slot_size)
             self.coord_quantizer = CoordQuantizer(
                 [17,  # shape / orientation
-                6]  # colors
+                6,
+                2]  # colors
             )
 
         self.slot_attention = SlotAttention(num_iterations=self.num_iterations,
@@ -164,6 +165,10 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             raise ValueError('Wrong mode')
 
         image = batch
+        # image = image['image']
+        # print(image.shape)
+        # # image = image.permute(0, 2, 3, 1)
+        # # print(image.shape)
         if self.add_quantization:
             recon_combined, recons, masks, kl_loss = self(image)
         else:
