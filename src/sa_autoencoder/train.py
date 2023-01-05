@@ -44,7 +44,7 @@ program_parser.add_argument("--path_to_dataset", type=Path, default=Path("/home/
 
 # Experiment parameters
 program_parser.add_argument("--batch_size", type=int, default=2)
-program_parser.add_argument("--from_checkpoint", type=str, default=None)
+program_parser.add_argument("--from_checkpoint", type=str, default='None')
 program_parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
 program_parser.add_argument("--add_quantization", type=bool, default=True)
 
@@ -90,7 +90,7 @@ dict_args = vars(args)
 autoencoder = SlotAttentionAutoEncoder(**dict_args)
 
 ckpt_path = str(args.from_checkpoint)
-if ckpt_path != None:
+if ckpt_path != "None":
     state_dict = torch.load(ckpt_path)['state_dict']
 
     remove_decoder = False
