@@ -29,7 +29,7 @@ singularity exec instance://ml_env /bin/bash -c "
       nvidia-smi;
       free -m;
       cd /home/smirnov_cv;
-      python3 slot_attention_pytorch/train.py --mode "tetrominoes" --path_to_dataset "/home/smirnov_cv/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 534 --seed 1
+      python3 slot_attention_pytorch/src/sa_autoencoder/train.py --mode "tetrominoes" --path_to_dataset "/home/smirnov_cv/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 534 --seed 1
       free -m;
 ";
 
