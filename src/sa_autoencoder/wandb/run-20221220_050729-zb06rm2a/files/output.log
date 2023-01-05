@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "train.py", line 87, in <module>
-    max_objs=6)
-  File "/home/cosmos/PycharmProjects/CogMod-Slot-Attention/slot_attention_pytorch/src/sa_autoencoder/datasets/clevr.py", line 31, in __init__
-    with open(scenes_path, 'r') as f:
-FileNotFoundError: [Errno 2] No such file or directory: '../../../datasets/CLEVR_v1.0/scenes/CLEVR_train_scenes.json'
