@@ -13,7 +13,7 @@
 
 singularity instance start \
                      --nv  \
-                     --bind /home/AI/yudin.da/smirnov_cv/slot_attention_pytorch/datasets/:/home/ \
+                     --bind /home/AI/yudin.da/smirnov_cv/slot_attention_pytorch/datasets/:/home/sa \
                      /home/AI/yudin.da/smirnov_cv/quantised_sa/ml_env.sif ml_env
 
 singularity exec instance://ml_env /bin/bash -c "
@@ -25,7 +25,7 @@ singularity exec instance://ml_env /bin/bash -c "
       ulimit -Sn;
       nvidia-smi;
       free -m;
-      cd /home/smirnov_cv;
+      cd /home/sa;
       python3 clevr_with_masks.py;
       free -m;
 ";
