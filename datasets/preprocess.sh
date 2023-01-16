@@ -2,7 +2,7 @@
 
 # Example of running python script in a batch mode
 
-#SBATCH -J dataset preprocess
+#SBATCH -J dataset_preprocess
 #SBATCH -p normal
 #SBATCH -c 1                            # one CPU core
 #SBATCH -o hello-%j.out
