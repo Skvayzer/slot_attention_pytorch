@@ -1,13 +1,14 @@
-#!/bin/bash
-
-# Example of running python script in a batch mode
-
-#SBATCH -J dataset_preprocess
-#SBATCH -p normal
-#SBATCH -c 1                            # one CPU core
-#SBATCH -o hello-%j.out
-#SBATCH --mail-type=ALL
+#!/bin/bash -l
+#SBATCH --job-name=clevr_with_mask_preprocess
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --partition=GTX780
+#SBATCH --mem-per-gpu=16GB
 #SBATCH --mail-user=k.smirnov@innopolis.university
+#SBATCH --mail-type=END
+#SBATCH --no-kill
+#SBATCH --comment="Обучение нейросетевой модели в рамках НИР Центра когнитивного моделирования"
 
 # Load software
 module load anaconda3
