@@ -7,17 +7,17 @@ from .tetrominoes import Tetrominoes
 from .clevr import CLEVR
 
 
-def get_dataset(path_to_dataset: Path, mode='clevr', validation=False, test=False) -> Dataset:
+def get_dataset(path_to_dataset: Path, mode='clevr_with_masks', validation=False, test=False) -> Dataset:
     assert not (validation & test)
 
-    if mode == 'multi_dsprites' or mode == 'tetrominoes' or mode=='clevr':
+    if mode == 'multi_dsprites' or mode == 'tetrominoes' or mode=='clevr_with_masks':
         if validation:
             split = 'val'
         elif test:
             split = 'test'
         else:
             split = 'train'
-        if mode == 'clevr':
+        if mode == 'clevr_with_masks':
             dataset = MultiDSprites(path_to_dataset=path_to_dataset / f'{mode}_{split}')
         else:
             dataset = MultiDSprites(path_to_dataset=path_to_dataset / f'{mode}_{split}.npz')

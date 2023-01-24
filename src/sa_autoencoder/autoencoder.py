@@ -1,3 +1,4 @@
+import os
 from typing import Tuple
 from modules.quantizer import CoordQuantizer
 
@@ -58,7 +59,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         self.decay_rate = decay_rate
         self.num_steps = num_steps
 
-        if self.mode == 'clevr':
+        if self.mode == 'clevr_with_masks':
             self.hidden_size = 64
             self.decoder_initial_size = (8, 8)
             self.resolution = (128, 128)
@@ -215,6 +216,9 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         self.step(batch, batch_idx, mode='Validation')
+        if self.current_epoch % 10 == 0:
+            save_path = "./sa_autoencoder_end_to_end/" + 'tetraminoes'
+            self.trainer.save_checkpoint(os.path.join(save_path, f"{self.current_epoch}_{self.beta}_tetraminoes_od_pretrained.ckpt"))
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
@@ -222,7 +226,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
 
 if __name__ == '__main__':
     # Clevr
-    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr')
+    # slot_attention_ae = SlotAttentionAutoEncoder(resolution=(128, 128), num_slots=7, num_iterations=3, mode='clevr_with_masks')
     # x = torch.randn((10, 3, 128, 128))
     # ans = slot_attention_ae(x)
     # print("Done")

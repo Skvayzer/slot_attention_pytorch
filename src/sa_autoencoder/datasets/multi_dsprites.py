@@ -7,7 +7,8 @@ from torch.utils.data import Dataset
 
 class MultiDSprites(Dataset):
     def __init__(self, path_to_dataset: Path, mode=None):
-        if mode == 'clevr':
+        self.mode = mode
+        if mode == 'clevr_with_masks':
             self.masks = np.load(path_to_dataset + '_masks.npz')
             self.images = np.load(path_to_dataset + '_images.npz')
             self.visibility = np.load(path_to_dataset + '_visibility.npz')
@@ -24,4 +25,6 @@ class MultiDSprites(Dataset):
     def __getitem__(self, idx):
         image = self.images[idx]
         image = torch.from_numpy(image).float() / 255
+        if self.mode == 'tetraminoes':
+            image = image * 2 - 1
         return image

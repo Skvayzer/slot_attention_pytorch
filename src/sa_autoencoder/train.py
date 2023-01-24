@@ -38,7 +38,7 @@ program_parser = parser.add_argument_group('program')
 program_parser.add_argument("--log_model", default=True)
 
 # dataset parameters
-program_parser.add_argument("--mode", type=str, choices=['tetrominoes', 'multi_dsprites', 'clevr'], default='tetrominoes')
+program_parser.add_argument("--mode", type=str, choices=['tetrominoes', 'multi_dsprites', 'clevr_with_masks'], default='tetrominoes')
 program_parser.add_argument("--path_to_dataset", type=Path, default=Path("/home/alexandr_ko/datasets/multi_objects/tetrominoes"),
                             help="Path to the dataset directory")
 
