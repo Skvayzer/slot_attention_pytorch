@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Tuple
 from modules.quantizer import CoordQuantizer
 
@@ -131,6 +132,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             props, coords, kl_loss = self.coord_quantizer(slots)
             # `props` has shape: [batch_size, num_slots, 32]
             # `coords` has shape: [batch_size, num_slots, 64]
+            print("\n\nATTENTION! props/coords : ", props.shape, coords.shape, file=sys.stderr, flush=True)
+
             slots = torch.cat([props, coords], dim=-1)
             slots = self.slots_lin(slots)
 
