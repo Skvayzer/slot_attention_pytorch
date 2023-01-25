@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --job-name=quantised_sa_od_tetrominoes_scale_-1to1_17_6_seed7_end_to_end
+#SBATCH --job-name=quantised_sa_od_tetrominoes_scale_-1to1_8888__seed13_end_to_end
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-task=1
@@ -29,7 +29,7 @@ singularity exec instance://ml_env3 /bin/bash -c "
       nvidia-smi;
       free -m;
       cd /home/smirnov_cv;
-      python3 slot_attention_pytorch/src/sa_autoencoder/train.py --mode "tetrominoes" --path_to_dataset "/home/smirnov_cv/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 1000 --seed 7
+      python3 slot_attention_pytorch/src/sa_autoencoder/train.py --mode "tetrominoes" --path_to_dataset "/home/smirnov_cv/quantised_sa/datasets/multi_objects/tetrominoes" --device 0 --batch_size 64 --max_epochs 1000 --seed 13
       free -m;
 ";
 
