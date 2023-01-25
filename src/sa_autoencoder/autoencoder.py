@@ -97,7 +97,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         if self.add_quantization:
             # Quantization block
             # TODO: Edit num in and num out
-            nums = [8, 8, 8, 8]
+            nums = [17, 17, 17, 17]
             self.slots_lin = nn.Linear(16 * len(nums) + 64, self.slot_size)
             self.coord_quantizer = CoordQuantizer(nums)
 
