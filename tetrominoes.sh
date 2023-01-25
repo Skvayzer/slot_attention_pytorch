@@ -17,9 +17,9 @@
 singularity instance start \
                      --nv  \
                      --bind /home/AI/yudin.da/smirnov_cv/:/home/smirnov_cv/ \
-                     /home/AI/yudin.da/smirnov_cv/quantised_sa/ml_env.sif ml_env3
+                     /home/AI/yudin.da/smirnov_cv/quantised_sa/ml_env.sif ml_env4
 
-singularity exec instance://ml_env3 /bin/bash -c "
+singularity exec instance://ml_env4 /bin/bash -c "
       source /miniconda/etc/profile.d/conda.sh;
       conda activate ml_env;
       export WANDB_API_KEY=c84312b58e94070d15277f8a5d58bb72e57be7fd;
@@ -33,4 +33,4 @@ singularity exec instance://ml_env3 /bin/bash -c "
       free -m;
 ";
 
-singularity instance stop ml_env3
+singularity instance stop ml_env4
