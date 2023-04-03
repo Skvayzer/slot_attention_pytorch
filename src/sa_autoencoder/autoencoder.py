@@ -71,7 +71,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.decoder_initial_size = self.resolution
             self.num_slots = 6
         elif self.mode == 'tetrominoes':
-            self.hidden_size = 64
+            self.hidden_size = 32
             self.resolution = (35, 35)
             self.decoder_initial_size = self.resolution
             self.num_slots = 4
