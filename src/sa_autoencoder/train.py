@@ -46,7 +46,7 @@ program_parser.add_argument("--path_to_dataset", type=Path, default=Path("/home/
 program_parser.add_argument("--batch_size", type=int, default=2)
 program_parser.add_argument("--from_checkpoint", type=str, default='None')
 program_parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
-program_parser.add_argument("--add_quantization", type=bool, default=True)
+program_parser.add_argument("--add_quantization", type=bool, default=False)
 
 # Add model specific args
 parser = SlotAttentionAutoEncoder.add_model_specific_args(parent_parser=parser)
