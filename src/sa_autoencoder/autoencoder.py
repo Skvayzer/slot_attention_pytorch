@@ -25,7 +25,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # model options
         parser.add_argument("--lr", type=float, default=4.e-4)
         parser.add_argument("--num_steps", type=int, default=500_000)
-        parser.add_argument("--warmup_steps", type=int, default=10_000)
+        parser.add_argument("--warmup_steps", type=int, default=8_000)
         parser.add_argument("--decay_steps", type=int, default=100_000)
         parser.add_argument("--decay_rate", type=int, default=0.5)
 
