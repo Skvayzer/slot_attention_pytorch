@@ -71,7 +71,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.decoder_initial_size = self.resolution
             self.num_slots = 6
         elif self.mode == 'tetrominoes':
-            self.hidden_size = 64
+            self.hidden_size = 32
             self.resolution = (35, 35)
             self.decoder_initial_size = self.resolution
             self.num_slots = 4
@@ -166,6 +166,8 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             raise ValueError('Wrong mode')
 
         image = batch
+        print(f"\n\nATTENTION! batch 1 image  {image.shape} {image[0]} ", file=sys.stderr, flush=True)
+
         # image = image['image']
         # print(image.shape)
         # # image = image.permute(0, 2, 3, 1)
@@ -174,8 +176,11 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             recon_combined, recons, masks, kl_loss = self(image)
         else:
             recon_combined, recons, masks = self(image)
-        loss = F.mse_loss(recon_combined, image)
+        print(f"\n\nATTENTION! batch recon_combined  {recon_combined.shape} {recon_combined[0]} ", file=sys.stderr, flush=True)
 
+        loss = F.mse_loss(recon_combined, image)
+        print(f"\n\nATTENTION! loss   {loss} ", file=sys.stderr, flush=True)
+        return
         self.log(f'{mode} MSE', loss)
         if self.add_quantization:
             self.log(f'{mode} KL loss', kl_loss)
