@@ -25,7 +25,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
         # model options
         parser.add_argument("--lr", type=float, default=4.e-4)
         parser.add_argument("--num_steps", type=int, default=500_000)
-        parser.add_argument("--warmup_steps", type=int, default=8_000)
+        parser.add_argument("--warmup_steps", type=int, default=10_000)
         parser.add_argument("--decay_steps", type=int, default=100_000)
         parser.add_argument("--decay_rate", type=int, default=0.5)
 
@@ -71,7 +71,7 @@ class SlotAttentionAutoEncoder(pl.LightningModule):
             self.decoder_initial_size = self.resolution
             self.num_slots = 6
         elif self.mode == 'tetrominoes':
-            self.hidden_size = 32
+            self.hidden_size = 64
             self.resolution = (35, 35)
             self.decoder_initial_size = self.resolution
             self.num_slots = 4
